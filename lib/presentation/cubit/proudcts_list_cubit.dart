@@ -9,7 +9,6 @@ class ProductsListCubit extends Cubit<ProductsListState> {
   ProductsListCubit({required this.productsRepository}) : super(ProductsListInitial());
   List<Products> product = [];
   List<Products> searchResults = [];
-  List<Products> cartItems = [];
 
 
   void fetchProducts() async {
