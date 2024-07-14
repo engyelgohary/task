@@ -2,22 +2,21 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:taskroute/data/model/Data.dart';
+import 'package:taskroute/presentation/cubit/proudcts_list_cubit.dart';
 import '../../utils/my_colors.dart';
 
 class GridViewCardItem extends StatelessWidget {
-  Data product;
-  int index;
+  final Products product;
   final bool isWishlisted;
 
   GridViewCardItem({
-    required this.index,
     required this.product,
     this.isWishlisted = false,
   });
 
   @override
   Widget build(BuildContext context) {
-    String imageUrl = product.products![index].images!.isNotEmpty ? product.products![index].images![0] : '';
+    String imageUrl = product.images!.isNotEmpty ? product.images![0] : '';
     print(imageUrl);
     return Container(
       margin: EdgeInsets.symmetric(horizontal: 5.w),
@@ -71,7 +70,7 @@ class GridViewCardItem extends StatelessWidget {
           Padding(
             padding: EdgeInsets.only(left: 8.w),
             child: Text(
-              product.products![index].title??"",
+              product.title??"",
               maxLines: 2,
               overflow: TextOverflow.ellipsis,
               style: Theme.of(context).textTheme.titleSmall!.copyWith(
@@ -84,7 +83,7 @@ class GridViewCardItem extends StatelessWidget {
           Padding(
             padding: EdgeInsets.only(left: 8.w),
             child: Text(
-              product.products![index].description??"",
+              product.description??"",
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
               style: Theme.of(context).textTheme.titleSmall!.copyWith(
@@ -102,7 +101,7 @@ class GridViewCardItem extends StatelessWidget {
             child: Row(
               children: [
                 Text(
-                  "EGP ${product.products![index].price}",
+                  "EGP ${product.price}",
                   maxLines: 1,
                   style: Theme.of(context).textTheme.titleSmall!.copyWith(
                     fontSize: 14.sp,
@@ -114,7 +113,7 @@ class GridViewCardItem extends StatelessWidget {
                   width: 35.w,
                 ),
                 Text(
-                  " ${product.products![index].discountPercentage}",
+                  " ${product.discountPercentage}",
                   maxLines: 1,
                   style: Theme.of(context).textTheme.titleSmall!.copyWith(
                     fontSize: 14.sp,
@@ -134,7 +133,7 @@ class GridViewCardItem extends StatelessWidget {
             child: Row(
               children: [
                 Text(
-                  "Reviews (${product.products![index].rating})",
+                  "Reviews (${product.rating})",
                   maxLines: 1,
                   style: Theme.of(context).textTheme.titleSmall!.copyWith(
                     fontSize: 14.sp,
@@ -151,16 +150,10 @@ class GridViewCardItem extends StatelessWidget {
                 const Spacer(
                   flex: 1,
                 ),
-                InkWell(
-                  onTap: () {
-                    // todo: add to cart
-                  },
-                  splashColor: Colors.transparent,
-                  child: Icon(
-                    Icons.add_circle,
-                    size: 32.sp,
-                    color: AppColors.primaryColor,
-                  ),
+                Icon(
+                  Icons.add_circle,
+                  size: 32.sp,
+                  color: AppColors.primaryColor,
                 )
               ],
             ),

@@ -8,14 +8,32 @@ class ProductsListCubit extends Cubit<ProductsListState> {
   ProductsRepository productsRepository;
   ProductsListCubit({required this.productsRepository}) : super(ProductsListInitial());
   List<Products> product = [];
+  List<Products> searchResults = [];
+  List<Products> cartItems = [];
+
+
   void fetchProducts() async {
     emit(ProductsListLoading());
     try {
       final response = await productsRepository.getListOfProduct();
       product = response.products ?? [];
-      emit(ProductsListSuccess(product: response));
+      searchResults = product;
+      emit(ProductsListSuccess(product: searchResults));
     } catch (e) {
       emit(ProductsListError(e.toString()));
     }
   }
+  void searchProduct(String searchTerm) {
+    if (searchTerm.isEmpty) {
+      searchResults = product;
+    } else {
+      searchResults = product
+          .where((item) =>
+          item.title!.toLowerCase().contains(searchTerm.toLowerCase()))
+          .toList();
+    }
+    emit(ProductsListSuccess(product: searchResults));
+  }
+
 }
+

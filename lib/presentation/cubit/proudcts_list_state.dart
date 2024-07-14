@@ -14,11 +14,15 @@ final class ProductsListError extends ProductsListState {
   List<Object> get props => [message];
 }
 final class ProductsListSuccess extends ProductsListState {
-  Data product;
+  final List<Products> product;
 
   ProductsListSuccess({required this.product});
 
   @override
   List<Object> get props => [product];
+}
+class SearchResultsState extends ProductsListState {
+  final List<Products> searchResults;
+  SearchResultsState({required this.searchResults});
 }
 

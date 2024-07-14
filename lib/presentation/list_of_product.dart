@@ -15,12 +15,21 @@ class ListOfProduct extends StatefulWidget {
 }
 
 class _ListOfProductState extends State<ListOfProduct> {
-  ProductsListCubit modelView = ProductsListCubit(productsRepository: injectProductsRepository());
+  late ProductsListCubit modelView;
+
   @override
   void initState() {
     super.initState();
+    modelView = ProductsListCubit(productsRepository: injectProductsRepository());
     modelView.fetchProducts();
   }
+
+  @override
+  void dispose() {
+    modelView.close();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -28,63 +37,67 @@ class _ListOfProductState extends State<ListOfProduct> {
         leading: Image.asset("assets/images/logo.png"),
         leadingWidth: 80,
       ),
-      body: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(children: [
-            Expanded(
-              child: CustomTextField(),
+      body: BlocProvider(
+        create: (_) => modelView,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                Expanded(
+                  child: CustomTextField(cubit: modelView),
+                ),
+                SizedBox(
+                  width: 24.w,
+                ),
+                Padding(
+                  padding: EdgeInsets.only(right: 6.w),
+                  child: ImageIcon(
+                    AssetImage("assets/images/icon _shopping cart_.png"),
+                    size: 28.sp,
+                    color: AppColors.primaryColor,
+                  ),
+                ),
+              ],
             ),
             SizedBox(
-              width: 24.w,
+              height: 15.h,
             ),
-            Padding(
-              padding: EdgeInsets.only(right: 6.w),
-              child: ImageIcon(
-                AssetImage("assets/images/icon _shopping cart_.png"),
-                size: 28.sp,
-                color: AppColors.primaryColor,
+            Expanded(
+              child: BlocBuilder<ProductsListCubit, ProductsListState>(
+                builder: (context, state) {
+                  if (state is ProductsListLoading) {
+                    return Center(child: CircularProgressIndicator());
+                  } else if (state is ProductsListSuccess) {
+                    return GridView.builder(
+                      itemCount: state.product.length,
+                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: 2,
+                        childAspectRatio: 2 / 2.4,
+                        crossAxisSpacing: 9.w,
+                        mainAxisSpacing: 15.h,
+                      ),
+                      itemBuilder: (context, index) {
+                        final product = state.product[index];
+                        return InkWell(
+                          splashColor: Colors.transparent,
+                          hoverColor: Colors.transparent,
+                          highlightColor: Colors.transparent,
+                          child: GridViewCardItem(product: product,),
+                        );
+                      },
+                    );
+                  } else if (state is ProductsListError) {
+                    return Center(child: Text(state.message));
+                  } else {
+                    return Container();
+                  }
+                },
               ),
-            ),
-          ]),
-          SizedBox(
-            height: 15.h,
-          ),
-          Expanded(
-            child: BlocBuilder<ProductsListCubit, ProductsListState>(
-              bloc:modelView,
-              builder: (context, state) {
-                if (state is ProductsListLoading) {
-                  return Center(child: CircularProgressIndicator());
-                } else if (state is ProductsListSuccess) {
-                  return GridView.builder(
-                    itemCount: state.product.products!.length,
-                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 2,
-                      childAspectRatio: 2 / 2.4,
-                      crossAxisSpacing: 9.w,
-                      mainAxisSpacing: 15.h,
-                    ),
-                    itemBuilder: (context, index) {
-                      final product = state.product;
-                      return InkWell(
-                        splashColor: Colors.transparent,
-                        hoverColor: Colors.transparent,
-                        highlightColor: Colors.transparent,
-                        child: GridViewCardItem(product: product,index: index,),
-                      );
-                    },
-                  );
-                } else if (state is ProductsListError) {
-                  return Center(child: Text(state.message));
-                } else {
-                  return Container();
-                }
-              },
-            ),
-          )
-        ],
+            )
+          ],
+        ),
       ),
     );
   }
