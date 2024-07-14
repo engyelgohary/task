@@ -25,14 +25,12 @@ class CustomTextField extends StatelessWidget {
             fontWeight: FontWeight.normal,
             color: const Color.fromRGBO(6, 0, 79, 0.6),
           ),
-          prefixIcon: IconButton(
-            icon: Icon(
+          prefixIcon:
+             Icon(
               Icons.search,
               size: 32.sp,
               color: AppColors.primaryColor.withOpacity(0.75),
             ),
-            onPressed: () {},
-          ),
           border: buildBaseBorder(),
           enabledBorder: buildBaseBorder(),
           focusedBorder: buildBaseBorder().copyWith(

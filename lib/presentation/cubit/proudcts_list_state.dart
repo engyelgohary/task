@@ -7,9 +7,7 @@ final class ProductsListInitial extends ProductsListState {}
 final class ProductsListLoading extends ProductsListState {}
 final class ProductsListError extends ProductsListState {
   final String message;
-
   ProductsListError(this.message);
-
   @override
   List<Object> get props => [message];
 }
